@@ -437,5 +437,77 @@ html, body {
 	<!-- Start of bodyEnd -->
     
     <!-- End of bodyEnd -->
+
+<style id="remove-framer-badge">
+a[href*="framer.com"][style*="position: fixed"],
+a[href*="framer.com"][style*="position:fixed"],
+a[href*="framer.com"][aria-label*="Framer" i],
+a[href*="framer.com"][title*="Framer" i],
+[data-framer-name*="Made in Framer" i],
+[data-framer-name*="Framer Badge" i],
+.framer-badge,
+#framer-badge,
+[data-framer-component-type="Badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+</style>
+
+<script id="remove-framer-badge-script">
+(() => {
+  const removeFramerBadge = () => {
+    document.querySelectorAll(
+      'a[href*="framer.com"], ' +
+      '[data-framer-name*="Framer" i], ' +
+      '.framer-badge, #framer-badge'
+    ).forEach((element) => {
+      const text = (element.textContent || "").trim().toLowerCase();
+      const href = (element.getAttribute("href") || "").toLowerCase();
+      const name = (element.getAttribute("data-framer-name") || "").toLowerCase();
+      const aria = (element.getAttribute("aria-label") || "").toLowerCase();
+      const title = (element.getAttribute("title") || "").toLowerCase();
+
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+
+      const looksLikeBadge =
+        text.includes("made in framer") ||
+        text === "framer" ||
+        name.includes("made in framer") ||
+        name.includes("framer badge") ||
+        aria.includes("made in framer") ||
+        title.includes("made in framer") ||
+        (
+          href.includes("framer.com") &&
+          style.position === "fixed" &&
+          rect.width < 350 &&
+          rect.height < 150
+        );
+
+      if (looksLikeBadge) {
+        element.remove();
+      }
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", removeFramerBadge);
+  } else {
+    removeFramerBadge();
+  }
+
+  new MutationObserver(removeFramerBadge).observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
+  setTimeout(removeFramerBadge, 500);
+  setTimeout(removeFramerBadge, 1500);
+  setTimeout(removeFramerBadge, 4000);
+})();
+</script>
+
 </body>
 </html>
